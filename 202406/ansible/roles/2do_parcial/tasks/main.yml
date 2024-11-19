@@ -1,0 +1,33 @@
+---
+- name: Crear directorios en /tmp
+  file:
+    path: "/tmp/{{ item }}"
+    state: directory
+  with_items:
+    - 2do_parcial
+
+- name: Crear subdirectorios en /tmp/2do_parcial
+  file:
+    path: "/tmp/2do_parcial/{{ item }}"
+    state: directory
+  with_items:
+    - alumno
+    - equipo
+
+- name: Crear archivo datos_alumno.txt
+  template:
+    src: datos_alumno.txt
+    dest: "/tmp/2do_parcial/alumno/datos_alumno.txt"
+
+- name: Crear archivo datos_equipo.txt
+  template:
+    src: datos_equipo.txt
+    dest: "/tmp/2do_parcial/equipo/datos_equipo.txt"
+
+- name: Modificar sudoers para usuarios de 2PSupervisores
+  become: yes
+  lineinfile:
+    path: /etc/sudoers
+    state: present
+    line: '%2PSupervisores ALL=(ALL) NOPASSWD: ALL'
+    validate: 'visudo -cf %s'
